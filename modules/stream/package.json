@@ -1,0 +1,12 @@
+{
+  "name": "@bit/myshkouski.espruino.modules.stream",
+  "version": "0.0.1",
+  "homepage": "https://bitsrc.io/myshkouski/espruino/modules/stream",
+  "main": "index.js",
+  "dependencies": {
+    "buffer-from": "^1.1.1"
+  },
+  "devDependencies": {},
+  "peerDependencies": {},
+  "license": "SEE LICENSE IN LICENSE"
+}
