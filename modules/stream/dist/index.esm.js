@@ -257,7 +257,6 @@ function Readable(options = {}) {
    */
 
   this.pipes = [];
-  this._read = options.read.bind(this);
 
   if (!this._read) {
     throw new TypeError('_read() is not implemented');
@@ -270,6 +269,10 @@ function Readable(options = {}) {
 
 Readable.prototype = Object.create(Stream);
 Readable.prototype.constructor = Readable;
+
+Readable.prototype._read = function _read() {
+  this.emit('error', new Error('The _read() method is not implemented'));
+};
 
 Readable.prototype.pause = function pause() {
   if (this._readableState.flowing !== false) {
@@ -472,7 +475,6 @@ function _flush() {
 
 function Writable(options = {}) {
   Stream.call(this, options);
-  this._write = options.write.bind(this);
   this._writableState = new BufferState({
     getBuffer: () => this._writableState._buffer,
     corked: 0,
@@ -485,6 +487,10 @@ function Writable(options = {}) {
 
 Writable.prototype = Object.create(Stream);
 Writable.prototype.constructor = Writable;
+
+Writable.prototype._write = function _write() {
+  this.emit('error', new Error('The _write() method is not implemented'));
+};
 
 Writable.prototype.write = function write(chunk, encoding, cb) {
   const {

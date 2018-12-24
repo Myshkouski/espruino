@@ -47,8 +47,6 @@ function Readable(options = {}) {
    */
   this.pipes = []
 
-  this._read = options.read.bind(this)
-
   if (!this._read) {
     throw new TypeError('_read() is not implemented')
   }
@@ -60,6 +58,10 @@ function Readable(options = {}) {
 
 Readable.prototype = Object.create(Stream)
 Readable.prototype.constructor = Readable
+
+Readable.prototype._read = function _read() {
+  this.emit('error', new Error('The _read() method is not implemented'))
+}
 
 Readable.prototype.pause = function pause() {
   if (this._readableState.flowing !== false) {

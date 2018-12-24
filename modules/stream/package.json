@@ -2,7 +2,7 @@
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "name": "@bit/myshkouski.espruino.modules.stream",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://bitsrc.io/myshkouski/espruino/modules/stream",
   "devDependencies": {
     "@babel/core": "^7.2.2",
@@ -20,7 +20,7 @@
     "build:dev": "npm run build -- -w"
   },
   "dependencies": {
-    "@bit/myshkouski.espruino.modules.buffer-from": "0.0.1",
-    "@bit/myshkouski.espruino.modules.events": "0.0.1"
+    "@bit/myshkouski.espruino.modules.buffer-from": "0.0.2",
+    "@bit/myshkouski.espruino.modules.events": "0.0.2"
   }
 }

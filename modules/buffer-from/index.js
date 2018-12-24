@@ -40,4 +40,4 @@ function bufferFrom (value, encodingOrOffset, length) {
   return E.toUint8Array(value)
 }
 
-export default bufferFrom
+module.exports = bufferFrom

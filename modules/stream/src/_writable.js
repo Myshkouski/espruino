@@ -62,7 +62,6 @@ function _flush() {
  */
 function Writable(options = {}) {
   Stream.call(this, options)
-  this._write = options.write.bind(this)
 
   this._writableState = new BufferState({
     getBuffer: () => this._writableState._buffer,
@@ -76,6 +75,11 @@ function Writable(options = {}) {
 
 Writable.prototype = Object.create(Stream)
 Writable.prototype.constructor = Writable
+
+Writable.prototype._write = function _write() {
+  this.emit('error', new Error('The _write() method is not implemented'))
+}
+
 Writable.prototype.write = function write(chunk, encoding, cb) {
   const {
     _writableState

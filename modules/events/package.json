@@ -1,0 +1,10 @@
+{
+  "name": "@bit/myshkouski.espruino.modules.events",
+  "version": "0.0.2",
+  "homepage": "https://bitsrc.io/myshkouski/espruino/modules/events",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {},
+  "license": "SEE LICENSE IN LICENSE"
+}

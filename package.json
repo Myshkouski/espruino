@@ -4,7 +4,10 @@
     "bit-bin": "^13.0.4",
     "buffer-from": "^1.1.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@bit/myshkouski.espruino.modules.events": "file:./modules/events",
+    "@bit/myshkouski.espruino.modules.buffer-from": "file:./modules/buffer-from"
+  },
   "scripts": {
     "preinstall": "node -- scripts/test-bit $(echo npm config get '@bit:registry')"
   }
