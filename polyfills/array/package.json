@@ -1,0 +1,10 @@
+{
+  "name": "@bit/myshkouski.espruino.polyfills.array",
+  "version": "0.0.1",
+  "homepage": "https://bitsrc.io/myshkouski/espruino/polyfills/array",
+  "main": "array.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {},
+  "license": "SEE LICENSE IN LICENSE"
+}

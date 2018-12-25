@@ -6,7 +6,7 @@ import resolve from 'rollup-plugin-node-resolve'
 const __src = path.resolve('src')
 const __dist = path.resolve('dist')
 
-const input = path.resolve(__src, 'index.js')
+const input = path.resolve(__src, 'index.mjs')
 const external = id => !id.startsWith('.') && !id.startsWith(path.sep) && !~id.indexOf(__src)
 const basePlugins = [
   resolve(),
@@ -18,11 +18,10 @@ export default [{
   external,
   output: {
     format: 'esm',
-    file: path.resolve(__dist, 'index.esm.js')
+    file: path.resolve(__dist, 'index.mjs')
   },
   plugins: [
-    ...basePlugins,
-    babel()
+    ...basePlugins
   ]
 }, {
   input,
@@ -33,10 +32,6 @@ export default [{
   },
   plugins: [
     ...basePlugins,
-    babel({
-      presets: [
-        'babel-preset-espruino'
-      ]
-    })
+    babel()
   ]
 }]

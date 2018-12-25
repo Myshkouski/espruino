@@ -4,13 +4,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var EventEmitter = _interopDefault(require('@bit/myshkouski.espruino.modules.events'));
-var bufferFrom = _interopDefault(require('@bit/myshkouski.espruino.modules.buffer-from'));
+var EventEmitter = _interopDefault(require('events'));
+var bufferFrom = _interopDefault(require('buffer-from'));
 
-var DEFAULT_HIGHWATERMARK = 128;
+const DEFAULT_HIGHWATERMARK = 128;
 
-function Stream() {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+function Stream(options = {}) {
   EventEmitter.call(this);
   this.options = {
     highWaterMark: options.highWaterMark || DEFAULT_HIGHWATERMARK
@@ -32,8 +31,7 @@ Stream.prototype.constructor = Stream;
  * @param   {object}  [options={}]  [options description]
  */
 
-function BufferState() {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+function BufferState(options = {}) {
   Object.assign(this, options, {
     _buffer: [],
     length: 0
@@ -49,9 +47,9 @@ function createNode(chunk) {
 }
 
 BufferState.prototype = {
-  push: function (chunk) {
+  push(chunk) {
     if (chunk.length) {
-      var node = createNode(chunk);
+      const node = createNode(chunk);
 
       if (this._buffer.length) {
         this._buffer[this._buffer.length - 1].next = node;
@@ -64,8 +62,9 @@ BufferState.prototype = {
 
     return this.length;
   },
-  unshift: function (chunk) {
-    var node = createNode(chunk);
+
+  unshift(chunk) {
+    const node = createNode(chunk);
 
     if (this._buffer.length) {
       node.next = this._buffer[0];
@@ -76,24 +75,30 @@ BufferState.prototype = {
     this.length += node.chunk.length;
     return this.length;
   },
-  nodes: function (count) {
-    var nodes = this._buffer.splice(0, count);
+
+  nodes(count) {
+    const nodes = this._buffer.splice(0, count);
 
     nodes.forEach(node => this.length -= node.chunk.length);
     return nodes;
   },
-  at: function (index) {
+
+  shift() {
+    return this.nodes(1)[0];
+  },
+
+  at(index) {
     if (index >= this.length || index < 0) {
       return;
     }
 
-    for (var nodeIndex = 0; nodeIndex < this._buffer.length; nodeIndex++) {
-      var chunk = this._buffer[nodeIndex].chunk;
+    for (let nodeIndex = 0; nodeIndex < this._buffer.length; nodeIndex++) {
+      const chunk = this._buffer[nodeIndex].chunk;
 
       if (index < chunk.length) {
         return {
-          index: index,
-          nodeIndex: nodeIndex,
+          index,
+          nodeIndex,
           value: chunk[index]
         };
       }
@@ -101,30 +106,32 @@ BufferState.prototype = {
       index -= chunk.length;
     }
   },
-  for: function (from, to, callee) {
-    var firstNode = this._buffer[from.nodeIndex];
 
-    for (var index = from.nodeIndex; index < firstNode.chunk.length; index++) {
+  for(from, to, callee) {
+    const firstNode = this._buffer[from.nodeIndex];
+
+    for (let index = from.nodeIndex; index < firstNode.chunk.length; index++) {
       callee.call(this, firstNode.chunk[index]);
     }
 
-    for (var nodeIndex = 1 + from.nodeIndex; nodeIndex < to.nodeIndex; nodeIndex++) {
-      var node = this._buffer[nodeIndex];
+    for (let nodeIndex = 1 + from.nodeIndex; nodeIndex < to.nodeIndex; nodeIndex++) {
+      const node = this._buffer[nodeIndex];
 
-      for (var _index = 0; _index < node.chunk.length; _index++) {
-        callee.call(this, node.chunk[_index]);
+      for (let index = 0; index < node.chunk.length; index++) {
+        callee.call(this, node.chunk[index]);
       }
     }
 
     if (from.nodeIndex < to.nodeIndex) {
-      var lastNode = this._buffer[to.nodeIndex];
+      const lastNode = this._buffer[to.nodeIndex];
 
-      for (var _index2 = 0; _index2 <= to.index; _index2++) {
-        callee.call(this, lastNode.chunk[_index2]);
+      for (let index = 0; index <= to.index; index++) {
+        callee.call(this, lastNode.chunk[index]);
       }
     }
   },
-  slice: function (length) {
+
+  slice(length) {
     if (length === undefined) {
       length = this.length;
     }
@@ -137,7 +144,7 @@ BufferState.prototype = {
       length = this.length;
     }
 
-    var to;
+    let to;
 
     if (length) {
       to = this.at(length);
@@ -150,21 +157,22 @@ BufferState.prototype = {
       };
     }
 
-    var buffer = bufferFrom(Array(length));
+    let array = [];
 
-    var offset = this._buffer.slice(to.nodeIndex - 1).reduce((offset, node) => {
-      buffer.set(node.chunk, offset);
+    const offset = this._buffer.slice(to.nodeIndex - 1).reduce((offset, node) => {
+      array = array.concat(node.chunk);
       return offset + node.chunk.length;
     }, 0);
 
     if (offset < length) {
-      var node = this._buffer[to.nodeIndex];
-      buffer.set(node.chunk.slice(0, length - offset), offset);
+      const node = this._buffer[to.nodeIndex];
+      array = array.concat(node.chunk.slice(0, length - offset));
     }
 
-    return buffer;
+    return bufferFrom(Aarray);
   },
-  buffer: function (length) {
+
+  buffer(length) {
     if (length === undefined) {
       length = this.length;
     }
@@ -177,7 +185,7 @@ BufferState.prototype = {
       length = this.length;
     }
 
-    var to;
+    let to;
 
     if (length) {
       to = this.at(length);
@@ -190,15 +198,15 @@ BufferState.prototype = {
       };
     }
 
-    var buffer = bufferFrom(Array(length));
-    var offset = this.nodes(to.nodeIndex).reduce((offset, node) => {
-      buffer.set(node.chunk, offset);
+    let array = [];
+    const offset = this.nodes(to.nodeIndex).reduce((offset, node) => {
+      array = array.concat(node.chunk);
       return offset + node.chunk.length;
     }, 0);
 
     if (offset < length) {
-      var node = this.nodes(1)[0];
-      buffer.set(node.chunk.slice(0, length - offset), offset);
+      const node = this.shift();
+      array = array.concat(node.chunk.slice(0, length - offset));
 
       if (length - offset < node.chunk.length) {
         node.chunk = node.chunk.slice(length - offset);
@@ -206,19 +214,20 @@ BufferState.prototype = {
       }
     }
 
-    return buffer;
+    return bufferFrom(array);
   }
+
 };
 
-var encodings = {
+const encodings = {
   BINARY: 'binary',
   UTF8: 'utf8'
 };
 
 function toString(binary) {
-  var str = '';
+  let str = '';
 
-  for (var i = 0; i < binary.length; i++) {
+  for (let i = 0; i < binary.length; i++) {
     str += String.fromCharCode(binary[i]);
   }
 
@@ -226,50 +235,55 @@ function toString(binary) {
 }
 
 function _flow() {
-  if (this._readableState.flowing) {
-    var chunk = this.read();
+  if (this.readableFlowing) {
+    const node = this._readableState.shift();
 
-    if (chunk && chunk.length) {
+    if (node && node.chunk && node.chunk.length) {
+      let {
+        chunk
+      } = node;
+
       if (this._readableState.defaultEncoding === encodings.UTF8) {
-        chunk = toString(chunk);
+        chunk = toString(node.chunk);
       }
 
-      process.nextTick(() => {
+      setImmediate(() => {
         this.emit('data', chunk, this._readableState.defaultEncoding);
+      });
+    }
+
+    if (this._readableState.flowing) {
+      this._readableState.flowing = false;
+      setImmediate(() => {
+        this._readableState.flowing = true;
+
+        if (!this._readableState.ended) {
+          this._read();
+        }
       });
     }
   }
 }
 
 function _end() {
-  this._readableState.flowing = null;
+  this.readableFlowing = null;
   this._readableState.ended = true;
+  this.emit('end');
 }
 
-function Readable() {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+function Readable(options = {}) {
+  Stream.call(this, options);
   this._readableState = new BufferState({
-    flowing: null,
+    flowing: true,
     ended: false,
     defaultEncoding: encodings.BINARY
   });
-  /**
-   * @property
-   * @type array
-   */
-
+  this.readableFlowing = null;
   this.pipes = [];
-
-  if (!this._read) {
-    throw new TypeError('_read() is not implemented');
-  }
-
-  if (!(this._read instanceof Function)) {
-    throw new TypeError('\'options.read\' should be a function, passed ' + typeof options.read);
-  }
+  options.read && (this._read = options.read);
 }
 
-Readable.prototype = Object.create(Stream);
+Readable.prototype = Object.create(Stream.prototype);
 Readable.prototype.constructor = Readable;
 
 Readable.prototype._read = function _read() {
@@ -277,8 +291,8 @@ Readable.prototype._read = function _read() {
 };
 
 Readable.prototype.pause = function pause() {
-  if (this._readableState.flowing !== false) {
-    this._readableState.flowing = false;
+  if (this.readableFlowing !== false) {
+    this.readableFlowing = false;
     this.emit('pause');
   }
 
@@ -286,8 +300,8 @@ Readable.prototype.pause = function pause() {
 };
 
 Readable.prototype.resume = function resume() {
-  if (!this._readableState.flowing) {
-    this._readableState.flowing = true;
+  if (!this.readableFlowing) {
+    this.readableFlowing = true;
     this.emit('resume');
 
     _flow.call(this);
@@ -327,13 +341,20 @@ Readable.prototype.read = function read(length) {
 };
 
 Readable.prototype.push = function push(chunk) {
+  if (this._readableState.ended) {
+    this.emit('error', new Error('stream.push() after EOF'));
+    return false;
+  }
+
   if (chunk === null) {
     _end.call(this);
 
     return false;
   }
 
-  var overflow = this._readableState.push(chunk) > this.options.highWaterMark;
+  this._readableState.push(chunk);
+
+  const overflow = this._readableState.length > this.options.highWaterMark;
 
   if (!overflow) {
     _flow.call(this);
@@ -343,7 +364,9 @@ Readable.prototype.push = function push(chunk) {
 };
 
 function _onData(pipe, data) {
-  var writable = pipe.writable;
+  const {
+    writable
+  } = pipe;
 
   if (!writable.write(data)) {
     pipe.stopped = true;
@@ -359,14 +382,14 @@ function _onceDrain(pipe) {
 
 Readable.prototype.pipe = function pipe(writable) {
   if (!this.pipes.some(pipe => pipe.writable === writable)) {
-    var _pipe = {
-      writable: writable,
+    const pipe = {
+      writable,
       stopped: undefined
     };
-    _pipe.onData = _onData.bind(this, _pipe);
-    _pipe.onceDrain = _onceDrain.bind(this, _pipe);
-    this.pipes.push(_pipe);
-    this.on('data', _pipe.onData);
+    pipe.onData = _onData.bind(this, pipe);
+    pipe.onceDrain = _onceDrain.bind(this, pipe);
+    this.pipes.push(pipe);
+    this.on('data', pipe.onData);
     writable.emit('pipe');
   }
 
@@ -374,10 +397,10 @@ Readable.prototype.pipe = function pipe(writable) {
 };
 
 Readable.prototype.unpipe = function unpipe(writable) {
-  var pipes = [];
+  let pipes = [];
 
   if (writable) {
-    var index = this.pipes.indexOf(writable);
+    const index = this.pipes.indexOf(writable);
 
     if (~index) {
       pipes = this.pipes.splice(index, 1);
@@ -387,10 +410,11 @@ Readable.prototype.unpipe = function unpipe(writable) {
   }
 
   if (pipes.length) {
-    for (var _index in pipes) {
-      var _pipes$_index = pipes[_index],
-          onData = _pipes$_index.onData,
-          onceDrain = _pipes$_index.onceDrain;
+    for (let index in pipes) {
+      const {
+        onData,
+        onceDrain
+      } = pipes[index];
       this.removeListener('data', onData);
       this.removeListener('drain', onceDrain);
     }
@@ -414,13 +438,11 @@ Readable.prototype.removeListener = function removeListener(event, listener) {
 };
 
 Readable.prototype.isPaused = function isPaused() {
-  return !this._readableState.flowing;
+  return !this.readableFlowing;
 };
 
-function _readFromInternalBuffer() {
-  var _this$_writableState;
-
-  var spliced = (_this$_writableState = this._writableState).nodes.apply(_this$_writableState, arguments);
+function _readFromInternalBuffer(...args) {
+  const spliced = this._writableState.nodes(...args);
 
   if (this._writableState.needDrain && this._writableState.length < this.options.highWaterMark) {
     this._writableState.needDrain = false;
@@ -431,7 +453,9 @@ function _readFromInternalBuffer() {
 }
 
 function _flush() {
-  var _writableState = this._writableState;
+  const {
+    _writableState
+  } = this;
   if (_writableState.corked) return;
 
   if (!_writableState.length) {
@@ -442,7 +466,7 @@ function _flush() {
     return;
   }
 
-  var cb = err => {
+  const cb = err => {
     if (err) this.emit('error', err);
     _writableState.consumed = true;
     process.nextTick(() => {
@@ -454,11 +478,11 @@ function _flush() {
     _writableState.consumed = false;
 
     if (this._writev) {
-      var nodes = _readFromInternalBuffer.call(this);
+      const nodes = _readFromInternalBuffer.call(this);
 
       this._writev(nodes, cb);
     } else {
-      var node = _readFromInternalBuffer.call(this, 1)[0];
+      const node = _readFromInternalBuffer.call(this, 1)[0];
 
       this._write(node.chunk, node.encoding, cb);
     }
@@ -472,8 +496,7 @@ function _flush() {
  */
 
 
-function Writable() {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+function Writable(options = {}) {
   Stream.call(this, options);
   this._writableState = new BufferState({
     getBuffer: () => this._writableState._buffer,
@@ -483,9 +506,10 @@ function Writable() {
     ended: false,
     decodeStrings: true
   });
+  options.write && (this._write = options.write);
 }
 
-Writable.prototype = Object.create(Stream);
+Writable.prototype = Object.create(Stream.prototype);
 Writable.prototype.constructor = Writable;
 
 Writable.prototype._write = function _write() {
@@ -493,8 +517,9 @@ Writable.prototype._write = function _write() {
 };
 
 Writable.prototype.write = function write(chunk, encoding, cb) {
-  var _writableState = this._writableState,
-      buffer = _writableState.buffer;
+  const {
+    _writableState
+  } = this;
 
   if (_writableState.ended) {
     throw new Error('Write after end');
@@ -525,8 +550,7 @@ Writable.prototype.uncork = function uncork() {
   }
 };
 
-function Duplex() {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+function Duplex(options = {}) {
   Readable.call(this, options);
   Writable.call(this, options);
 }
@@ -535,10 +559,10 @@ Duplex.prototype = Object.create(Readable.prototype);
 Object.assign(Duplex.prototype, Writable.prototype);
 Duplex.prototype.constructor = Duplex;
 
-function Transform() {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+function Transform(options = {}) {
   Duplex.call(this, {
-    read: function () {},
+    read() {},
+
     write: options.transform
   });
 }
@@ -551,8 +575,7 @@ function _transform(data, encoding, cb) {
   cb();
 }
 
-function PassThrough() {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+function PassThrough(options = {}) {
   Transform.call(this, {
     // @ts-ignore
     transform: 'transform' in options ? options.transform : _transform

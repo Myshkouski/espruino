@@ -1,9 +1,8 @@
 {
   "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "name": "@bit/myshkouski.espruino.modules.stream",
-  "version": "0.0.2",
-  "homepage": "https://bitsrc.io/myshkouski/espruino/modules/stream",
+  "module": "dist/index.mjs",
+  "name": "@alexeimyshkouski/pico-stream",
+  "version": "0.0.1",
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "babel-preset-espruino": "0.0.2",

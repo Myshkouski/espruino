@@ -1,0 +1,10 @@
+{
+  "name": "@bit/myshkouski.espruino.polyfills.console",
+  "version": "0.0.1",
+  "homepage": "https://bitsrc.io/myshkouski/espruino/polyfills/console",
+  "main": "console.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {},
+  "license": "SEE LICENSE IN LICENSE"
+}

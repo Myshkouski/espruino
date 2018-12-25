@@ -1,0 +1,10 @@
+{
+  "name": "@bit/myshkouski.espruino.modules.util",
+  "version": "0.0.1",
+  "homepage": "https://bitsrc.io/myshkouski/espruino/modules/util",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {},
+  "license": "SEE LICENSE IN LICENSE"
+}
