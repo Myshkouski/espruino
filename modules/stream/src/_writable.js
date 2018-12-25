@@ -71,9 +71,11 @@ function Writable(options = {}) {
     ended: false,
     decodeStrings: true
   })
+
+  options.write && (this._write = options.write)
 }
 
-Writable.prototype = Object.create(Stream)
+Writable.prototype = Object.create(Stream.prototype)
 Writable.prototype.constructor = Writable
 
 Writable.prototype._write = function _write() {

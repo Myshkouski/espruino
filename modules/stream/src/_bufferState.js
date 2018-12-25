@@ -62,6 +62,10 @@ BufferState.prototype = {
     return nodes
   },
 
+  shift() {
+    return this.nodes(1)[0]
+  },
+
   at(index) {
     if (index >= this.length || index < 0) {
       return
@@ -128,21 +132,20 @@ BufferState.prototype = {
       }
     }
 
-    const buffer = bufferFrom(Array(length))
+    let array = []
 
-    const offset = this._buffer.slice(to.nodeIndex - 1)
-      .reduce((offset, node) => {
-        buffer.set(node.chunk, offset)
-        return offset + node.chunk.length
-      }, 0)
+    const offset = this._buffer.slice(to.nodeIndex - 1).reduce((offset, node) => {
+      array = array.concat(node.chunk)
+      return offset + node.chunk.length
+    }, 0)
 
     if (offset < length) {
       const node = this._buffer[to.nodeIndex]
 
-      buffer.set(node.chunk.slice(0, length - offset), offset)
+      array = array.concat(node.chunk.slice(0, length - offset))
     }
 
-    return buffer
+    return bufferFrom(Aarray)
   },
 
   buffer(length) {
@@ -170,18 +173,18 @@ BufferState.prototype = {
         nodeIndex: this._buffer.length - 1
       }
     }
-    const buffer = bufferFrom(Array(length))
 
-    const offset = this.nodes(to.nodeIndex)
-      .reduce((offset, node) => {
-        buffer.set(node.chunk, offset)
-        return offset + node.chunk.length
-      }, 0)
+    let array = []
+
+    const offset = this.nodes(to.nodeIndex).reduce((offset, node) => {
+      array = array.concat(node.chunk)
+      return offset + node.chunk.length
+    }, 0)
 
     if (offset < length) {
-      const node = this.nodes(1)[0]
+      const node = this.shift()
 
-      buffer.set(node.chunk.slice(0, length - offset), offset)
+      array = array.concat(node.chunk.slice(0, length - offset))
       if (length - offset < node.chunk.length) {
         node.chunk = node.chunk.slice(length - offset)
 
@@ -189,7 +192,7 @@ BufferState.prototype = {
       }
     }
 
-    return buffer
+    return bufferFrom(array)
   }
 }
 

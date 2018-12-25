@@ -15,48 +15,56 @@ function toString(binary) {
 }
 
 function _flow() {
-  if (this._readableState.flowing) {
-    let chunk = this.read()
-    if (chunk && chunk.length) {
+  if (this.readableFlowing) {
+    const node = this._readableState.shift()
+
+    if (node && node.chunk && node.chunk.length) {
+      let {
+        chunk
+      } = node
       if (this._readableState.defaultEncoding === encodings.UTF8) {
-        chunk = toString(chunk)
+        chunk = toString(node.chunk)
       }
 
-      process.nextTick(() => {
+      setImmediate(() => {
         this.emit('data', chunk, this._readableState.defaultEncoding)
+      })
+    }
+
+    if (this._readableState.flowing) {
+      this._readableState.flowing = false
+      setImmediate(() => {
+        this._readableState.flowing = true
+        if (!this._readableState.ended) {
+          this._read()
+        }
       })
     }
   }
 }
 
 function _end() {
-  this._readableState.flowing = null
+  this.readableFlowing = null
   this._readableState.ended = true
+
+  this.emit('end')
 }
 
 function Readable(options = {}) {
+  Stream.call(this, options)
+
   this._readableState = new BufferState({
-    flowing: null,
+    flowing: true,
     ended: false,
     defaultEncoding: encodings.BINARY
   })
 
-  /**
-   * @property
-   * @type array
-   */
+  this.readableFlowing = null
   this.pipes = []
-
-  if (!this._read) {
-    throw new TypeError('_read() is not implemented')
-  }
-
-  if (!(this._read instanceof Function)) {
-    throw new TypeError('\'options.read\' should be a function, passed ' + typeof options.read)
-  }
+  options.read && (this._read = options.read)
 }
 
-Readable.prototype = Object.create(Stream)
+Readable.prototype = Object.create(Stream.prototype)
 Readable.prototype.constructor = Readable
 
 Readable.prototype._read = function _read() {
@@ -64,8 +72,8 @@ Readable.prototype._read = function _read() {
 }
 
 Readable.prototype.pause = function pause() {
-  if (this._readableState.flowing !== false) {
-    this._readableState.flowing = false
+  if (this.readableFlowing !== false) {
+    this.readableFlowing = false
     this.emit('pause')
   }
 
@@ -73,8 +81,8 @@ Readable.prototype.pause = function pause() {
 }
 
 Readable.prototype.resume = function resume() {
-  if (!this._readableState.flowing) {
-    this._readableState.flowing = true
+  if (!this.readableFlowing) {
+    this.readableFlowing = true
     this.emit('resume')
     _flow.call(this)
   }
@@ -113,12 +121,19 @@ Readable.prototype.read = function read(length) {
 }
 
 Readable.prototype.push = function push(chunk) {
+  if (this._readableState.ended) {
+    this.emit('error', new Error('stream.push() after EOF'))
+    return false
+  }
+
   if (chunk === null) {
     _end.call(this)
     return false
   }
 
-  const overflow = this._readableState.push(chunk) > this.options.highWaterMark
+  this._readableState.push(chunk)
+
+  const overflow = this._readableState.length > this.options.highWaterMark
 
   if (!overflow) {
     _flow.call(this)
@@ -176,13 +191,13 @@ Readable.prototype.unpipe = function unpipe(writable) {
     pipes = this.pipes.splice(0, this.pipes.length)
   }
 
-  if(pipes.length) {
+  if (pipes.length) {
     for (let index in pipes) {
       const {
         onData,
         onceDrain
       } = pipes[index]
-      
+
       this.removeListener('data', onData)
       this.removeListener('drain', onceDrain)
     }
@@ -206,7 +221,7 @@ Readable.prototype.removeListener = function removeListener(event, listener) {
 }
 
 Readable.prototype.isPaused = function isPaused() {
-  return !this._readableState.flowing
+  return !this.readableFlowing
 }
 
 export default Readable
