@@ -1,7 +1,5 @@
 {
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "name": "@alexeimyshkouski/pico-stream",
+  "main": "dist/index.mjs",
   "version": "0.0.1",
   "devDependencies": {
     "@babel/core": "^7.2.2",
@@ -12,11 +10,6 @@
     "rollup-plugin-babel": "^4.1.0",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0"
-  },
-  "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "rollup -c",
-    "build:dev": "npm run build -- -w"
   },
   "dependencies": {
     "@bit/myshkouski.espruino.modules.buffer-from": "0.0.2",
