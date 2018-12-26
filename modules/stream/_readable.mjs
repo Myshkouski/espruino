@@ -7,11 +7,7 @@ const encodings = {
 }
 
 function toString(binary) {
-  let str = ''
-  for (let i = 0; i < binary.length; i++) {
-    str += String.fromCharCode(binary[i])
-  }
-  return str
+  return String.fromCharCode.apply(null, binary)
 }
 
 function _flow() {

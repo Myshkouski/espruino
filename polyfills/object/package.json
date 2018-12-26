@@ -2,7 +2,7 @@
   "name": "@bit/myshkouski.espruino.polyfills.object",
   "version": "0.0.1",
   "homepage": "https://bitsrc.io/myshkouski/espruino/polyfills/object",
-  "main": "object.js",
+  "main": "index.js",
   "dependencies": {},
   "devDependencies": {},
   "peerDependencies": {},

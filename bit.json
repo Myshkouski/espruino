@@ -1,0 +1,4 @@
+{
+    "componentsDefaultDirectory": "{namespace}/{name}",
+    "packageManager": "npm"
+}

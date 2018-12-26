@@ -11,3 +11,11 @@ export {
   Transform,
   PassThrough
 }
+
+export default {
+  Readable,
+  Writable,
+  Duplex,
+  Transform,
+  PassThrough
+}

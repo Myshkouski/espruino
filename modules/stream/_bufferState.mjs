@@ -28,7 +28,7 @@ function createNode(chunk) {
 
 BufferState.prototype = {
   push(chunk) {
-    if (chunk.length) {
+    if (chunk && chunk.length) {
       const node = createNode(chunk)
 
       if (this._buffer.length) {

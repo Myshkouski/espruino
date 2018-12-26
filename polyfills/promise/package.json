@@ -2,7 +2,7 @@
   "name": "@bit/myshkouski.espruino.polyfills.promise",
   "version": "0.0.1",
   "homepage": "https://bitsrc.io/myshkouski/espruino/polyfills/promise",
-  "main": "promise.js",
+  "main": "index.js",
   "dependencies": {},
   "devDependencies": {},
   "peerDependencies": {},
