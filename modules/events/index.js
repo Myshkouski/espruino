@@ -1,69 +1,44 @@
-// const ERROR_EVENT_TYPE = 'error'
-// const ONERROR_PROP = '#on' + ERROR_EVENT_TYPE
+const EVENT_PREFIX = '#on'
 
-function EventEmitter() {
-	// this._listeners = {}
-}
+function EventEmitter() {}
 
-// function _duplicateEvent(event) {
-// 	if (event) {
-// 		if (`#${ event }` in this) {
-// 			this._listeners[event] = this[`#${ event }`]
-// 		} else {
-// 			delete this._listeners[event]
-// 		}
-// 	}
-// }
+EventEmitter.prototype = Object.create({
+	emit(event) {
+		if (event === 'error' && !this[EVENT_PREFIX + event]) {
+			throw new Error('Unhandled "error" event')
+		}
 
-// EventEmitter.prototype = {
-// 	emit(event, error) {
-// 		if (event === ERROR_EVENT_TYPE && !(this[ONERROR_PROP] || this._events[ERROR_EVENT_TYPE])) {
-// 			throw error
-// 		}
+		Object.prototype.emit.apply(this, arguments)
 
-// 		return Object.prototype.on.apply(this, arguments)
-// 	},
+		return this
+	},
 
-// 	on(event, listener) {
-// 		Object.prototype.on.apply(this, arguments)
-// 		_duplicateEvent.call(this, event)
+	on() {
+		Object.prototype.on.apply(this, arguments)
 
-// 		// this._listeners[event]
-// 		//   ? this._listeners[event].push(listener)
-// 		//   : this._listeners[event] = [listener]
+		return this
+	},
 
-// 		return this
-// 	},
+	once(event, listener) {
+		const once = () => {
+			this.removeListener(event, once)
+			return listener.apply(this, arguments)
+		}
 
-// 	removeListener(event, listener) {
-// 		Object.prototype.on.call(this, event, listener)
-// 		_duplicateEvent.call(this, event)
-// 		// if(!event) {
-// 		//   this._listeners = {}
-// 		// } else {
-// 		//   if(listener && this._listeners[event]) {
-// 		//     const index = this._listeners[event].indexOf(listener)
-// 		//
-// 		//     if(~index) {
-// 		//       this._listeners[event].splice(index, 1)
-// 		//     }
-// 		//   }
-// 		//
-// 		//   if(!listener || !this._listeners[event]) {
-// 		//     delete this._listeners[event]
-// 		//   }
-// 		// }
-// 		return this
-// 	},
+		return this.on(event, once)
+	},
 
-// 	once(event, listener) {
-// 		function once() {
-// 			this.removeListener(event, _listener)
-// 			return listener.apply(this, arguments)
-// 		}
+	removeListener(event, listener) {
+		Object.prototype.removeListener.call(this, event, listener)
 
-// 		return this.on(event, once)
-// 	}
-// }
+		return this
+	},
 
-module.exports = EventEmitter
+	removeAllListeners(event) {
+		Object.prototype.removeAllListeners.call(this, event)
+
+		return this
+	}
+})
+
+export default EventEmitter

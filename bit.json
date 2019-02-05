@@ -1,4 +1,6 @@
 {
-    "componentsDefaultDirectory": "{namespace}/{name}",
+    "env": {},
+    "dependencies": {},
+    "componentsDefaultDirectory": "{scope}/{name}",
     "packageManager": "npm"
 }

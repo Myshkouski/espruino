@@ -2,5 +2,8 @@
     "compilerOptions": {
         "target": "esnext",
         "checkJs": true
-    }
+    },
+    "include": [
+        "modules/**.js"
+    ]
 }

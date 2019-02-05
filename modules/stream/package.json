@@ -1,18 +1,5 @@
 {
-  "main": "dist/index.mjs",
-  "version": "0.0.1",
-  "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "babel-preset-espruino": "0.0.2",
-    "buffer-from": "^1.1.1",
-    "rimraf": "^2.6.2",
-    "rollup": "^0.67.4",
-    "rollup-plugin-babel": "^4.1.0",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-node-resolve": "^4.0.0"
-  },
-  "dependencies": {
-    "@bit/myshkouski.espruino.modules.buffer-from": "0.0.2",
-    "@bit/myshkouski.espruino.modules.events": "0.0.2"
-  }
+    "dependencies": {
+        "buffer-from": "^1.1.1"
+    }
 }

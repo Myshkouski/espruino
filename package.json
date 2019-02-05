@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "@types/node": "^10.12.15",
+    "bit-bin": "^13.0.4",
+    "buffer-from": "^1.1.1"
+  },
+  "dependencies": {},
+  "scripts": {
+    "preinstall": "node -- scripts/test-bit $(echo npm config get '@bit:registry')"
+  }
+}

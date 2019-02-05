@@ -1,4 +1,4 @@
-function bufferFrom (value, encodingOrOffset, length) {
+function bufferFrom(value, encodingOrOffset, length) {
   if (typeof value === 'number') {
     throw new TypeError('"value" argument must not be a number')
   }
@@ -40,4 +40,4 @@ function bufferFrom (value, encodingOrOffset, length) {
   return E.toUint8Array(value)
 }
 
-module.exports = bufferFrom
+export default bufferFrom
