@@ -1,3 +1,3 @@
-export default function clearImmediate(immediate) {
-  return clearTimeout(immediate)
+export default clearImmediate = immediate => {
+    return clearTimeout(immediate)
 }

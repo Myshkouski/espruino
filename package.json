@@ -1,16 +1,4 @@
 {
   "name": "@alexeimyshkouski/espruino",
-  "version": "0.0.2",
-  "devDependencies": {
-    "bit-bin": "^14.6.0",
-    "buffer-from": "^1.1.1",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-terser": "^5.1.2"
-  },
-  "dependencies": {},
-  "scripts": {
-    "preinstall": "node -- scripts/test-bit $(echo npm config get '@bit:registry')"
-  }
+  "version": "0.0.2"
 }

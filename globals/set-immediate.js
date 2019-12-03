@@ -1,3 +1,3 @@
-export default function setImmediate(cb) {
-  return setTimeout(cb, 0)
+export default setImmediate = cb => {
+    return setTimeout(cb, 0)
 }
