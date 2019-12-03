@@ -1,5 +1,7 @@
 {
     "dependencies": {
         "buffer-from": "^1.1.1"
-    }
+    },
+    "module": "index.mjs",
+    "type": "module"
 }
