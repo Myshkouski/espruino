@@ -1,4 +1,5 @@
 {
+  "name": "@alexeimyshkouski/espruino",
   "devDependencies": {
     "bit-bin": "^14.6.0",
     "buffer-from": "^1.1.1",
