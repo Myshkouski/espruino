@@ -1,3 +1,3 @@
-export default clearImmediate = immediate => {
-    return clearTimeout(immediate)
+if (!global.clearImmediate) {
+    global.clearImmediate = immediate => clearTimeout(immediate)
 }

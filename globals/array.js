@@ -13,5 +13,3 @@ Array.prototype.concat = function concat() {
 
     return concatenated
 }
-
-export default Array

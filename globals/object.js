@@ -28,5 +28,3 @@ Object.defineProperties = (obj, descriptors) => {
     }
     return obj
 }
-
-export default Object

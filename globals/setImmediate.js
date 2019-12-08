@@ -1,3 +1,3 @@
-export default setImmediate = cb => {
-    return setTimeout(cb, 0)
+if (!global.setImmediate) {
+    global.setImmediate = cb => setTimeout(cb, 0)
 }

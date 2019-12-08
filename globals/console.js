@@ -1,4 +1,4 @@
-if (typeof console.time !== 'function') {
+if (!console.time) {
     const timers = {}
 
     console.time = label => {
@@ -13,8 +13,10 @@ if (typeof console.time !== 'function') {
     }
 }
 
-if (typeof console.error !== 'function') {
+if (!console.error) {
     console.error = console.log
 }
 
-export default console
+if (!console.info) {
+    console.info = console.log
+}
